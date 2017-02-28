@@ -62,13 +62,12 @@ end
 function[adjacency_matrix] = creat_adjacency_matrix(n, graph, r)
     adjacency_matrix(n : n) = 0;
     for i = 1 : n
-        for j = 1 : n
+        for j = i + 1 : n
             adjacency_matrix(i,j) = sqrt( (graph(i,1)-graph(j,1))^2 + (graph(i,2)-graph(j,2))^2 );
             %calculate all the distances
             if adjacency_matrix(i,j) <= r
                 adjacency_matrix(i,j) = 1;
-            else
-                adjacency_matrix(i,j) = 0;
+                adjacency_matrix(j,i) = 1;
             end
             %turn to adjacency matrix
         end
