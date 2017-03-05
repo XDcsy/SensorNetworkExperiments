@@ -10,14 +10,14 @@ end
 function [] = case1()
     n = 10;
     connect = 0;
-    chart(1 : 20) = 0;
+    chart(1 : 50) = 0;
     for i = 1 : 4
-        for k = 1 : 20
-            r = k/20;
+        for k = 1 : 50
+            r = k/50;
             for j = 1 : 1000
                 graph = spread_nodes(n);  %spread the nodes randomly
-                adjacency_matrix = creat_adjacency_matrix(n, graph, r);  %creat adjacency matrix
-                graph_traversal(1, adjacency_matrix, n)  %traverse the graph from the 1st node
+                adjacency_table = creat_adjacency_table(n, graph, r);  %creat adjacency matrix
+                graph_traversal(1, adjacency_table, n)  %traverse the graph from the 1st node
                 if judge(n)  %judge if the graph is connected
                     connect = connect + 1;
                 end
@@ -26,22 +26,22 @@ function [] = case1()
             connect = 0;
         end
         n = n * 2;
-    draw(chart, 1)
-    chart(1 : 20) = 0;
+    draw(chart, 1, i)
+    chart(1 : 50) = 0;
     end
 end
 
 function [] = case2()
     r = 0.05;
     connect = 0;
-    chart(1 : 20) = 0;
+    chart(1 : 50) = 0;
     for i = 1 : 5
-        for k = 1 : 20
-            n = k * 5;
+        for k = 1 : 50
+            n = k * 2;
             for j = 1 : 1000
                 graph = spread_nodes(n);  %spread the nodes randomly
-                adjacency_matrix = creat_adjacency_matrix(n, graph, r);  %creat adjacency matrix
-                graph_traversal(1, adjacency_matrix, n)  %traverse the graph from the 1st node
+                adjacency_table = creat_adjacency_table(n, graph, r);  %creat adjacency matrix
+                graph_traversal(1, adjacency_table, n)  %traverse the graph from the 1st node
                 if judge(n)  %judge if the graph is connected
                     connect = connect + 1;
                 end
@@ -50,8 +50,8 @@ function [] = case2()
             connect = 0;
         end
         r = r + 0.1;
-    draw(chart, 2)
-    chart(1 : 20) = 0;
+    draw(chart, 2, i)
+    chart(1 : 50) = 0;
     end
 end
 
@@ -59,27 +59,28 @@ function[graph] = spread_nodes(n)
     graph = rand(n,2);
 end
 
-function[adjacency_matrix] = creat_adjacency_matrix(n, graph, r)
-    adjacency_matrix(n : n) = 0;
+function[adjacency_table] = creat_adjacency_table(n, graph, r)
+    adjacency_table(n , n + 1) = 0;
+	adjacency_table(:, n + 1) = 1;  %n+1 is a pointer
     for i = 1 : n
         for j = i + 1 : n
-            adjacency_matrix(i,j) = sqrt( (graph(i,1)-graph(j,1))^2 + (graph(i,2)-graph(j,2))^2 );
-            %calculate all the distances
-            if adjacency_matrix(i,j) <= r
-                adjacency_matrix(i,j) = 1;
-                adjacency_matrix(j,i) = 1;
+            if (sqrt( (graph(i,1)-graph(j,1))^2 + (graph(i,2)-graph(j,2))^2 ) < r);
+                adjacency_table(i,adjacency_table(i,n+1) ) = j;
+				adjacency_table(i,n+1) = adjacency_table(i,n+1) + 1;
+                adjacency_table(j,adjacency_table(j,n+1) ) = i;
+				adjacency_table(j,n+1) = adjacency_table(j,n+1) + 1;
             end
             %turn to adjacency matrix
         end
     end
 end
 
-function[] = graph_traversal(current_node, adjacency_matrix, n)
+function[] = graph_traversal(current_node, adjacency_table, n)
     global visited;
-    for next_node = 2 : n
-        if ((adjacency_matrix(current_node,next_node) == 1) && (visited(next_node) == 0) && (next_node ~= current_node) )
-            visited(next_node) = 1;
-            graph_traversal(next_node, adjacency_matrix, n);
+    for i = 1 : adjacency_table(current_node, n+1) - 1
+        if visited(adjacency_table(current_node, i)) == 0
+            visited(adjacency_table(current_node, i)) = 1;
+            graph_traversal(adjacency_table(current_node, i), adjacency_table, n);
         end
     end
 end
@@ -101,10 +102,13 @@ function[result] = judge(n)
     visited(1) = 1;
 end
 
-function[] = draw(chart, plot_num)
-        x = 0.05 : 0.05 : 1;
-        y = chart(1 : 20);
+function[] = draw(chart, plot_num, i)
+        line = '*^+ox';
+		x(1) = 0;
+		x(2:51) = 0.02 : 0.02 : 1;
+        y(1) = 0;
+		y(2:51) = chart(1 : 50);
         subplot(2,1,plot_num);
-        plot(x,y)
+        plot(x,y,['-',line(i)])
         hold on
 end
