@@ -5,7 +5,7 @@ function[] = compow()
     graph = spread_nodes(n);
     creat2Tables(graph, n, rMax);
     draw(1, graph);
-    minR = reduceR();
+    minR = reduceR(n);
     draw(2, graph, minR);
     ratio = countCoverage(graph, minR, n);
     disp(num2str(ratio));
@@ -17,43 +17,67 @@ function[graph] = spread_nodes(n)
 end
 
 function[] = creat2Tables(graph, n, rMax)
-    global connectionTable distanceTable;
-    connectionTable(1 : n) = 0;       %store the counts of each node's neighbour
-    distanceTable(1:n*(n-1)/2, 1:3) = -1;  %1:store distance, 2&3:nodes
+    global adjacency_matrix distanceTable visited;
+    visited(1 : n) = 0;
+    visited(1) = 1;
+    distanceTable(1:n*(n-1)/2, 1:3) = -1;
+    adjacency_matrix(n, n) = 0;
     num = 1;
     for i = 1 : n
         for j = i + 1 : n
             distance = sqrt( (graph(i,1)-graph(j,1))^2 + (graph(i,2)-graph(j,2))^2 );
-            if distance <= rMax && distance >= 0
+            if (distance <= rMax)
+                adjacency_matrix(i,j) = 1;
+                adjacency_matrix(j,i) = 1;
                 distanceTable(num,1) = distance;
                 distanceTable(num,2) = i;
                 distanceTable(num,3) = j;
-                connectionTable(i) = connectionTable(i) + 1;
-                connectionTable(j) = connectionTable(j) + 1;
             end
             num = num + 1;
         end
     end
     distanceTable = sortrows(distanceTable,-1);
-    if ~isempty(find(connectionTable == 0,1));
+    graph_traversal(1, n);
+    if ~judge()
         error('The graph is not connected even at max communication range.');
     end
 end
 
-function[minR] = reduceR()
-    global distanceTable connectionTable;
+function[] = graph_traversal(current_node, n)
+    global visited adjacency_matrix;
+    for next_node = 2 : n
+        if ((adjacency_matrix(current_node,next_node) == 1) && (visited(next_node) == 0) && (next_node ~= current_node) )
+            visited(next_node) = 1;
+            graph_traversal(next_node, n);
+        end
+    end
+end
+
+function[minR] = reduceR(n)
+    global adjacency_matrix distanceTable;
     i = 1;
     while 1
         node1 = distanceTable(i,2);
         node2 = distanceTable(i,3);
-        connectionTable(node1) = connectionTable(node1) - 1;
-        connectionTable(node2) = connectionTable(node2) - 1;
-        if connectionTable(node1) <=0 || connectionTable(node2) <=0
+        adjacency_matrix(node1, node2) = 0;
+        adjacency_matrix(node2, node1) = 0;
+        graph_traversal(1, n);
+        if ~judge()
             minR = distanceTable(i-1,1);
             break;
         end
         i = i + 1;
     end
+end
+
+function[result] = judge()
+    global visited
+    result = 0;
+    if isempty(find(visited == 0,1))
+        result = 1;
+    end
+    visited(:) = 0;
+    visited(1) = 1;
 end
 
 function[] = draw(n, graph, minR)
