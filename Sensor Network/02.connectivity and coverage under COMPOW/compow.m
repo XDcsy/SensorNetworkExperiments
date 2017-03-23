@@ -6,9 +6,11 @@ function[] = compow()
     creat2Tables(graph, n, rMax);
     draw(1, graph);
     minR = reduceR(n);
-    draw(2, graph, minR);
     ratio = countCoverage(graph, minR, n);
     disp(num2str(ratio));
+    disp(num2str(minR));
+    draw(2, graph, minR);
+    title(['ratio:',num2str(ratio),' minR:',num2str(minR)]);
     clear global;
 end
 
@@ -84,8 +86,9 @@ function[] = draw(n, graph, minR)
     global distanceTable
     x = graph(:,1);
     y = graph(:,2);
-    subplot(2,1,n);
+    subplot(1,2,n);
     plot(x,y,'ro');
+    axis square;
     i = 1;
     if n==2
         while distanceTable(i,1) > minR
