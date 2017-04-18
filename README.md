@@ -7,6 +7,6 @@ transmission radius/with respect to number of nodes in a unit area".<br>
 ①Determine the common transmission power of a sensor network under COMPOW protocol; ②Assume the communication and the coverage radii are equal to each other, calculate the coverage ratio of the sensor network<br>
 <br>
 **3. LEACH协议的部分模拟，计算出第一个节点的死亡发生在LEACH的第几轮**<br>
-Partly simulates the LEACH protocol and calculates when the first node death occurs in LEACH.<br>
+Partly simulates the LEACH protocol and calculates when does the first node death occur in LEACH.<br>
 <br>
 On going.  
