@@ -6,4 +6,4 @@ LEACH is a self-organizing, adaptive clustering protocol that uses randomization
 <br>
 **About this program:**<br>
 这个程序部分地模拟LEACH协议，求出给出一定条件时，第一个节点的死亡发生在LEACH的第几轮。<br>
-This program partly simulates LEACH and calculates when the first node death occurs in LEACH .<br>
+This program partly simulates LEACH and calculates when does the first node death occur in LEACH.<br>
