@@ -1,6 +1,5 @@
 classdef node < handle
-    %UNTITLED3 此处显示有关此类的摘要
-    %   此处显示详细说明
+    % The class for nodes in the WSN
     
     properties
         coordinate;
