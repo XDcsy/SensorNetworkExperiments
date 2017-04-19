@@ -1,8 +1,8 @@
 clear;
 energyLeft = 1;
 round = 0;
-num = 500;  %节点数目
-pow = 10000;  %总能量
+num = 100;  %节点数目
+pow = 5000;  %总能量
 P = 0.1;
 range = 1;  %节点接收此范围内的簇头广播
 times = 10;  %每轮发送数据次数
@@ -24,8 +24,8 @@ while energyLeft
     T = P/(1-P*mod(round,1/P));
     headnodes = [];
     nothaednodes = [];
-    for i = 1 : num  %每一轮开始时清空上一轮的簇头记录
-        nodes(i).clearHead();
+    for i = 1 : num  %每一轮开始时清空上一轮的簇头记录，并且重新产生随机数
+        nodes(i).reSet();
     end
     for i = 1 : num  %选举簇头
         nodes(i).elect(T);
@@ -60,6 +60,22 @@ while energyLeft
             break;
         end
     end
+    figure();
+    for i = 1 : num
+        if nodes(i).ishead  %将此轮的簇头、曾当选过簇头的节点和其他节点分别表示
+            plot(nodes(i).coordinate(1),nodes(i).coordinate(2),'ro');
+        else
+            if nodes(i).wasElected
+                plot(nodes(i).coordinate(1),nodes(i).coordinate(2),'r+');
+            else
+                plot(nodes(i).coordinate(1),nodes(i).coordinate(2),'r.');
+            end
+        end
+        line ([nodes(i).coordinate(1) nodes(i).head.coordinate(1)],[nodes(i).coordinate(2) nodes(i).head.coordinate(2)]);
+        hold on;
+    end
+    axis square;
+    title(['Round ',num2str(round)]);
     round = round + 1;
 end
 disp(round);

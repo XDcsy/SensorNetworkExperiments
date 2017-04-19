@@ -19,8 +19,9 @@ classdef node < handle
             obj.wasElected = 0;
             obj.power = pow;
         end
-        function[] = clearHead(obj)
+        function[] = reSet(obj)
             obj.head = [];
+            obj.randnum = rand();
         end
         function[] = elect(obj, T)
             if obj.ishead == 1  %清空上一轮的簇头
