@@ -9,4 +9,3 @@ transmission radius/with respect to number of nodes in a unit area".<br>
 **3. LEACH协议的部分模拟**<br>
 Partly simulates the LEACH protocol.<br>
 <br>
-On going.  
